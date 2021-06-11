@@ -1,0 +1,31 @@
+# 应用服务 WEB 访问端口
+server:
+  port: 8083
+# 应用名称
+spring:
+  application:
+    name: consumermq
+  rabbitmq:
+    host: 10.68.244.130
+    port: 5672
+    username: test
+    password: 123456
+    output:
+      ansi:
+        enabled: ALWAYS
+
+  cloud:
+    config:
+      enabled: false
+      fail-fast: true
+    stream:
+      defaultBinder: rabbit
+      bindings:
+        output:
+          destination: reportOrder-dev
+          content-type: application/json
+  output:
+    ansi:
+      enabled: ALWAYS
+
+
