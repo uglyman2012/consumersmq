@@ -8,8 +8,6 @@ import org.springframework.cloud.stream.annotation.EnableBinding;
 import org.springframework.cloud.stream.annotation.StreamListener;
 import org.springframework.cloud.stream.messaging.Processor;
 import org.springframework.messaging.handler.annotation.Payload;
-import org.springframework.retry.annotation.Backoff;
-import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Component;
 
 /**
@@ -25,7 +23,6 @@ import org.springframework.stereotype.Component;
 public class SysPersonalMessageHandler {
     private static Logger log = LoggerFactory.getLogger(SysPersonalMessageHandler.class);
 
-    @Retryable(value = {Exception.class },maxAttempts = 6,backoff = @Backoff(delay = 5000L,multiplier = 3))
     @StreamListener(value = Processor.INPUT,condition = "headers['payload_simple_name']=='SysPersonalInfoVO'")
     public void sysPersonalMessageListnner(@Payload SysPersonalInfo sysPersonalInfo) {
         log.info("会员订单T逍客mq信息: {}", JSON.toJSONString(sysPersonalInfo));
