@@ -1,6 +1,6 @@
 # 应用服务 WEB 访问端口
 server:
-  port: 8083
+  port: 8086
 # 应用名称
 spring:
   application:
@@ -14,24 +14,45 @@ spring:
 #      mandatory: true
 #      retry:
 #        enabled: true       #重试
-#        max-attempts: 2
-#        initial-interval: 1000
-#        max-interval: 5000
-#        multiplier: 2
+#        max-attempts: 4
+#        initial-interval: 5000
+#        max-interval: 500000
+#        multiplier: 4
     output:
       ansi:
         enabled: ALWAYS
 
   cloud:
-    config:
-      enabled: false
-      fail-fast: true
+#    config:
+#      enabled: false
+#      fail-fast: true
     stream:
       defaultBinder: rabbit
       bindings:
-        output:
+        input:
+          group: aa
           destination: reportOrder-dev
           content-type: application/json
+#          consumer:
+#            max-attempts: 4
+#            backOffInitialInterval: 1000
+#            backOffMultiplier: 4
+#            如果没用设置重试次数,true:表示重新入队,容易造成死循环
+#          requeueRejected: true
+#      rabbit:
+#        bindings:
+#          input:
+#            consumer:
+#              死信队列消息存活时间
+#              dlqTtl: 60000
+#              队列消息存活时间
+#              ttl: 2
+#              autoBindDlq: true
+#              可选配置
+#              deadLetterExchange: mq
+#              deadLetterQueueName: pppppp
+#              republishToDlq: false
+
   output:
     ansi:
       enabled: ALWAYS
