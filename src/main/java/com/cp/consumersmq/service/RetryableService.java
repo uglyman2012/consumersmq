@@ -16,15 +16,16 @@ import org.springframework.stereotype.Service;
 @Service
 public class RetryableService {
 
-    @Retryable(value = {Exception.class },maxAttempts = 2,backoff = @Backoff(delay = 2000,multiplier = 3))
-    public void test() throws Exception {//如果有返回参数,recover方法失效
+    @Retryable(value = {Exception.class },maxAttempts = 6,backoff = @Backoff(delay = 2000,multiplier = 3))
+    public String test() throws Exception {
         System.out.println("失败是成功之母");
         throw new Exception("ppp");
         //return "ppp";
     }
 
     @Recover
-    public void recover(Exception e) {
+    public String recover(Exception e) {//返回参数必须一致,否则失效
         System.out.println("失败了");
+        return "666";
     }
 }

@@ -28,7 +28,8 @@ public class TestController {
     @GetMapping("/test2")
     @ApiOperation("test2测试")
     public String test1() throws Exception {
-        retryableService.test();
-        return "success";
+        String test = retryableService.test();
+        return test;
     }
 }
+
