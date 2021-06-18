@@ -34,6 +34,8 @@ spring:
           destination: reportOrder-dev
           content-type: application/json
 #          consumer:
+#            concurrency: 1 # 初始/最少/空闲时 消费者数量。默认1
+#            maxConcurrency: 5 配置在这里无效
 #            max-attempts: 4
 #            backOffInitialInterval: 1000
 #            backOffMultiplier: 4
@@ -43,6 +45,10 @@ spring:
 #        bindings:
 #          input:
 #            consumer:
+#              acknowledge-mode: MANUAL
+#              max-attempts: 4
+#              prefetch: 2 # 限制consumer在消费消息时，一次能同时获取的消息数量，默认：1。
+#              maxConcurrency: 5 # 默认：1。queue的消费者的最大数量。当前消费者数量不足以及时消费消息时, 会动态增加消费者数量, 直到到达最大数量, 即该配置的值.
 #              死信队列消息存活时间
 #              dlqTtl: 60000
 #              队列消息存活时间
