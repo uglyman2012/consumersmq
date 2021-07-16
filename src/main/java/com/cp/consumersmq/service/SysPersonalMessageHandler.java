@@ -9,6 +9,7 @@ import org.springframework.amqp.support.AmqpHeaders;
 import org.springframework.cloud.stream.annotation.EnableBinding;
 import org.springframework.cloud.stream.annotation.StreamListener;
 import org.springframework.cloud.stream.messaging.Processor;
+import org.springframework.messaging.Message;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
@@ -31,6 +32,11 @@ public class SysPersonalMessageHandler {
     @StreamListener(value = Processor.INPUT,condition = "headers['payload_simple_name']=='SysPersonalInfoVO2'")
     public void sysPersonalMessageListnner(@Payload SysPersonalInfo sysPersonalInfo ) {
         log.info("会员订单T逍客mq信息: {}", JSON.toJSONString(sysPersonalInfo));
+
+    }
+    @StreamListener(value = Processor.INPUT,condition = "headers['payload_simple_name']=='SysPersonalInfoVO3'")
+    public void sysPersonalMessageListnner3(Message<String> message ) {
+        log.info("会员订单T逍客mq信息: {}", JSON.toJSONString(message));
 
     }
     /**
