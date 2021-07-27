@@ -1,12 +1,11 @@
 package com.cp.consumersmq.mqconfig;
 
-import com.rabbitmq.client.Channel;
+import com.cp.consumersmq.service.mq.MessageDelegate;
 import org.springframework.amqp.core.AcknowledgeMode;
-import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
-import org.springframework.amqp.rabbit.core.ChannelAwareMessageListener;
 import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
+import org.springframework.amqp.rabbit.listener.adapter.MessageListenerAdapter;
 import org.springframework.amqp.support.ConsumerTagStrategy;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -54,13 +53,17 @@ public class MqListener {
         });
 
         //消息监听
-        container.setMessageListener(new ChannelAwareMessageListener() {
-            @Override
-            public void onMessage(Message message, Channel channel) throws Exception {
-                String msg = new String(message.getBody());
-                System.err.println("----------消费者: " + msg);
-            }
-        });
+        //container.setMessageListener(new ChannelAwareMessageListener() {
+        //    @Override
+        //    public void onMessage(Message message, Channel channel) throws Exception {
+        //        String msg = new String(message.getBody());
+        //        System.err.println("----------消费者: " + msg);
+        //    }
+        //});
+        MessageListenerAdapter messageListenerAdapter = new MessageListenerAdapter(new MessageDelegate());
+        messageListenerAdapter.setDefaultListenerMethod("consumeMessage");
+        //messageListenerAdapter.setMessageConverter(new TextMessageConverter());
+        container.setMessageListener(messageListenerAdapter);
         return container;
     }
 }
