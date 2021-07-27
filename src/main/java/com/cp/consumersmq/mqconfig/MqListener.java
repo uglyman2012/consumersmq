@@ -1,6 +1,7 @@
 package com.cp.consumersmq.mqconfig;
 
 import com.cp.consumersmq.service.mq.MessageDelegate;
+import com.cp.consumersmq.service.mq.TextMessageConverter;
 import org.springframework.amqp.core.AcknowledgeMode;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
@@ -62,7 +63,7 @@ public class MqListener {
         //});
         MessageListenerAdapter messageListenerAdapter = new MessageListenerAdapter(new MessageDelegate());
         messageListenerAdapter.setDefaultListenerMethod("consumeMessage");
-        //messageListenerAdapter.setMessageConverter(new TextMessageConverter());
+        messageListenerAdapter.setMessageConverter(new TextMessageConverter());
         container.setMessageListener(messageListenerAdapter);
         return container;
     }
