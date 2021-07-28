@@ -7,11 +7,13 @@ import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
 import org.springframework.amqp.rabbit.listener.adapter.MessageListenerAdapter;
 import org.springframework.amqp.support.ConsumerTagStrategy;
+import org.springframework.amqp.support.converter.DefaultJackson2JavaTypeMapper;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -63,12 +65,18 @@ public class MqListener {
         //    }
         //});
         MessageListenerAdapter messageListenerAdapter = new MessageListenerAdapter(new MessageDelegate());
-        //messageListenerAdapter.setDefaultListenerMethod("consumeMessage");
-        HashMap<String, String> map = new HashMap<>();
-        map.put("queue001","consumeMessage2");
-        messageListenerAdapter.setQueueOrTagToMethodName(map);
+        messageListenerAdapter.setDefaultListenerMethod("consumeMessage3");
+        //HashMap<String, String> map = new HashMap<>();
+        //map.put("queue001","consumeMessage3");
+        //messageListenerAdapter.setQueueOrTagToMethodName(map);
         //messageListenerAdapter.setMessageConverter(new TextMessageConverter());
+        DefaultJackson2JavaTypeMapper javaTypeMapper = new DefaultJackson2JavaTypeMapper();
+        Map<String, Class<?>> idClassMapping = new HashMap<String, Class<?>>();
+        idClassMapping.put("order", com.cp.consumersmq.bean.Order.class);
+        javaTypeMapper.setIdClassMapping(idClassMapping);
         Jackson2JsonMessageConverter jackson2JsonMessageConverter = new Jackson2JsonMessageConverter();
+        jackson2JsonMessageConverter.setJavaTypeMapper(javaTypeMapper);
+
         messageListenerAdapter.setMessageConverter(jackson2JsonMessageConverter);
         container.setMessageListener(messageListenerAdapter);
         return container;
