@@ -1,16 +1,17 @@
 package com.cp.consumersmq.mqconfig;
 
 import com.cp.consumersmq.service.mq.MessageDelegate;
-import com.cp.consumersmq.service.mq.TextMessageConverter;
 import org.springframework.amqp.core.AcknowledgeMode;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
 import org.springframework.amqp.rabbit.listener.adapter.MessageListenerAdapter;
 import org.springframework.amqp.support.ConsumerTagStrategy;
+import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.HashMap;
 import java.util.UUID;
 
 /**
@@ -62,8 +63,13 @@ public class MqListener {
         //    }
         //});
         MessageListenerAdapter messageListenerAdapter = new MessageListenerAdapter(new MessageDelegate());
-        messageListenerAdapter.setDefaultListenerMethod("consumeMessage");
-        messageListenerAdapter.setMessageConverter(new TextMessageConverter());
+        //messageListenerAdapter.setDefaultListenerMethod("consumeMessage");
+        HashMap<String, String> map = new HashMap<>();
+        map.put("queue001","consumeMessage2");
+        messageListenerAdapter.setQueueOrTagToMethodName(map);
+        //messageListenerAdapter.setMessageConverter(new TextMessageConverter());
+        Jackson2JsonMessageConverter jackson2JsonMessageConverter = new Jackson2JsonMessageConverter();
+        messageListenerAdapter.setMessageConverter(jackson2JsonMessageConverter);
         container.setMessageListener(messageListenerAdapter);
         return container;
     }
