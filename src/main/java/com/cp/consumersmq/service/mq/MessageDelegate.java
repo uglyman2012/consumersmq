@@ -17,13 +17,16 @@ public class MessageDelegate {
     public void handleMessage(String messageBody) {
         System.err.println("默认方法, 消息内容:" + new String(messageBody));
     }
-    public void consumeMessage(String messageBody) {
+    public void consumeMessage(byte[] messageBody) {
         System.err.println("字节数组方法, 消息内容:" + new String(messageBody));
     }
-    public void consumeMessage2(Map messageBody) {
+    public void consumeMessage(String messageBody) {
+        System.err.println("字节数组方法1, 消息内容:" + new String(messageBody));
+    }
+    public void consumeMessage(Map messageBody) {
         System.err.println("字节数组方法2, 消息内容:" + messageBody);
     }
-    public void consumeMessage3(Order order) {
+    public void consumeMessage(Order order) {
         System.err.println("order对象, 消息内容3, id: " + order.getId() +
                 ", name: " + order.getName() +
                 ", content: "+ order.getContent());
