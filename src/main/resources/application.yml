@@ -21,6 +21,9 @@ spring:
     output:
       ansi:
         enabled: ALWAYS
+    listener:
+      simple:
+        acknowledge-mode: manual
 
   cloud:
 #    config:

@@ -1,22 +1,12 @@
 package com.cp.consumersmq.mqconfig;
 
-import com.cp.consumersmq.service.mq.MessageDelegate;
-import com.cp.consumersmq.service.mq.TextMessageConverter;
 import org.springframework.amqp.core.AcknowledgeMode;
-import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
-import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
-import org.springframework.amqp.rabbit.listener.adapter.MessageListenerAdapter;
-import org.springframework.amqp.support.ConsumerTagStrategy;
-import org.springframework.amqp.support.converter.ContentTypeDelegatingMessageConverter;
-import org.springframework.amqp.support.converter.DefaultJackson2JavaTypeMapper;
+import org.springframework.amqp.rabbit.listener.RabbitListenerContainerFactory;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
 
 /**
  * <p>
@@ -28,10 +18,10 @@ import java.util.UUID;
  */
 @Configuration
 public class MqListener {
-    @Bean
-    public Queue queue001() {
-        return new Queue("queue001", true); //队列持久
-    }
+    //@Bean
+    //public Queue queue001() {
+    //    return new Queue("queue001", true); //队列持久
+    //}
 
     //@Bean
     //public SimpleMessageListenerContainer messageContainer(ConnectionFactory connectionFactory) {
@@ -68,7 +58,7 @@ public class MqListener {
     //    //    }
     //    //});
     //    MessageListenerAdapter messageListenerAdapter = new MessageListenerAdapter(new MessageDelegate());
-    //    messageListenerAdapter.setDefaultListenerMethod("consumeMessage3");
+    //    messageListenerAdapter.setDefaultListenerMethod("consumeMessage");
     //    //HashMap<String, String> map = new HashMap<>();
     //    //map.put("queue001","consumeMessage3");
     //    //messageListenerAdapter.setQueueOrTagToMethodName(map);
@@ -84,66 +74,74 @@ public class MqListener {
     //    container.setMessageListener(messageListenerAdapter);
     //    return container;
     //}
+//    @Bean
+//    public SimpleMessageListenerContainer messageContainer2(ConnectionFactory connectionFactory) {
+//
+//        SimpleMessageListenerContainer container = new SimpleMessageListenerContainer(connectionFactory);
+//        //添加多个队列进行监听
+//        container.setQueues(queue001());
+//        //container.setQueueNames("queue001");
+//        //当前消费者数量
+//        container.setConcurrentConsumers(1);
+//        //最大消费者数量
+//        container.setMaxConcurrentConsumers(5);
+//        //设置重回队列，一般设置false
+//        container.setDefaultRequeueRejected(false);
+//        //设置自动签收机制
+//        container.setAcknowledgeMode(AcknowledgeMode.AUTO);
+//        //设置listener外露
+//        container.setExposeListenerChannel(true);
+//        //消费端标签生成策略
+//        container.setConsumerTagStrategy(new ConsumerTagStrategy() {
+//            @Override
+//            public String createConsumerTag(String queue) {
+//                //每个消费端都有自己独立的标签
+//                return queue + "_" + UUID.randomUUID().toString();
+//            }
+//        });
+//
+//        //消息监听
+//        //container.setMessageListener(new ChannelAwareMessageListener() {
+//        //    @Override
+//        //    public void onMessage(Message message, Channel channel) throws Exception {
+//        //        String msg = new String(message.getBody());
+//        //        System.err.println("----------消费者: " + msg);
+//        //    }
+//        //});
+//        MessageListenerAdapter messageListenerAdapter = new MessageListenerAdapter(new MessageDelegate());
+//        messageListenerAdapter.setDefaultListenerMethod("consumeMessage");
+//        //HashMap<String, String> map = new HashMap<>();
+//        //map.put("queue001","consumeMessage3");
+//        //messageListenerAdapter.setQueueOrTagToMethodName(map);
+//        //messageListenerAdapter.setMessageConverter(new TextMessageConverter());
+//
+//        ContentTypeDelegatingMessageConverter convert = new ContentTypeDelegatingMessageConverter();
+//        TextMessageConverter textConvert = new TextMessageConverter();
+////text走文本转换器
+//        convert.addDelegate("text", textConvert);
+////        convert.addDelegate("html/text", textConvert);
+////        convert.addDelegate("xml/text", textConvert);
+////        convert.addDelegate("text/plain", textConvert);
+////json走json转换器
+//        DefaultJackson2JavaTypeMapper javaTypeMapper = new DefaultJackson2JavaTypeMapper();
+//        Map<String, Class<?>> idClassMapping = new HashMap<String, Class<?>>();
+//        idClassMapping.put("order", com.cp.consumersmq.bean.Order.class);
+//        javaTypeMapper.setIdClassMapping(idClassMapping);
+//        Jackson2JsonMessageConverter jsonConvert = new Jackson2JsonMessageConverter();
+//        jsonConvert.setJavaTypeMapper(javaTypeMapper);
+//        convert.addDelegate("json", jsonConvert);
+//        convert.addDelegate("application/json", jsonConvert);
+//
+//        messageListenerAdapter.setMessageConverter(convert);
+//        container.setMessageListener(messageListenerAdapter);
+//        return container;
+//    }
     @Bean
-    public SimpleMessageListenerContainer messageContainer2(ConnectionFactory connectionFactory) {
-
-        SimpleMessageListenerContainer container = new SimpleMessageListenerContainer(connectionFactory);
-        //添加多个队列进行监听
-        container.setQueues(queue001());
-        //container.setQueueNames("queue001");
-        //当前消费者数量
-        container.setConcurrentConsumers(1);
-        //最大消费者数量
-        container.setMaxConcurrentConsumers(5);
-        //设置重回队列，一般设置false
-        container.setDefaultRequeueRejected(false);
-        //设置自动签收机制
-        container.setAcknowledgeMode(AcknowledgeMode.AUTO);
-        //设置listener外露
-        container.setExposeListenerChannel(true);
-        //消费端标签生成策略
-        container.setConsumerTagStrategy(new ConsumerTagStrategy() {
-            @Override
-            public String createConsumerTag(String queue) {
-                //每个消费端都有自己独立的标签
-                return queue + "_" + UUID.randomUUID().toString();
-            }
-        });
-
-        //消息监听
-        //container.setMessageListener(new ChannelAwareMessageListener() {
-        //    @Override
-        //    public void onMessage(Message message, Channel channel) throws Exception {
-        //        String msg = new String(message.getBody());
-        //        System.err.println("----------消费者: " + msg);
-        //    }
-        //});
-        MessageListenerAdapter messageListenerAdapter = new MessageListenerAdapter(new MessageDelegate());
-        messageListenerAdapter.setDefaultListenerMethod("consumeMessage");
-        //HashMap<String, String> map = new HashMap<>();
-        //map.put("queue001","consumeMessage3");
-        //messageListenerAdapter.setQueueOrTagToMethodName(map);
-        //messageListenerAdapter.setMessageConverter(new TextMessageConverter());
-
-        ContentTypeDelegatingMessageConverter convert = new ContentTypeDelegatingMessageConverter();
-        TextMessageConverter textConvert = new TextMessageConverter();
-//text走文本转换器
-        convert.addDelegate("text", textConvert);
-//        convert.addDelegate("html/text", textConvert);
-//        convert.addDelegate("xml/text", textConvert);
-//        convert.addDelegate("text/plain", textConvert);
-//json走json转换器
-        DefaultJackson2JavaTypeMapper javaTypeMapper = new DefaultJackson2JavaTypeMapper();
-        Map<String, Class<?>> idClassMapping = new HashMap<String, Class<?>>();
-        idClassMapping.put("order", com.cp.consumersmq.bean.Order.class);
-        javaTypeMapper.setIdClassMapping(idClassMapping);
-        Jackson2JsonMessageConverter jsonConvert = new Jackson2JsonMessageConverter();
-        jsonConvert.setJavaTypeMapper(javaTypeMapper);
-        convert.addDelegate("json", jsonConvert);
-        convert.addDelegate("application/json", jsonConvert);
-
-        messageListenerAdapter.setMessageConverter(convert);
-        container.setMessageListener(messageListenerAdapter);
-        return container;
+    public RabbitListenerContainerFactory<?> rabbitListenerContainerFactory(ConnectionFactory connectionFactory) {
+        SimpleRabbitListenerContainerFactory factory = new SimpleRabbitListenerContainerFactory();
+        factory.setConnectionFactory(connectionFactory);
+        factory.setMessageConverter(new Jackson2JsonMessageConverter());
+        factory.setAcknowledgeMode(AcknowledgeMode.MANUAL);             //开启手动 ack
+        return factory;
     }
 }
